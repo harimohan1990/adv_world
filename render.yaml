@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: advantage-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: oregon
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: advantage-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: advantage-redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: BACKEND_CORS_ORIGINS
+        value: "https://advantage-frontend.vercel.app" # Placeholder to be updated later
+
+  - type: worker
+    name: advantage-celery
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A app.worker.celery_app worker --loglevel=info
+    region: oregon
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: advantage-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: advantage-redis
+          property: connectionString
+
+databases:
+  - name: advantage-db
+    plan: free
+    region: oregon
+    postgresMajorVersion: 15
