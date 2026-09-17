@@ -8,14 +8,16 @@ from sqlalchemy.orm import selectinload
 from app.database.session import get_db
 from app.auth.deps import get_current_user, get_current_advertiser, get_current_admin
 from app.users.models import User
-from app.companies.models import Company
+from app.companies.models import Company, CompanyUser
 from app.campaigns.models import Campaign, Offer, CampaignStatus
 from app.campaigns import schemas
 
 router = APIRouter()
 
 async def get_user_company(db: AsyncSession, user_id: uuid.UUID) -> Company:
-    result = await db.execute(select(Company).where(Company.owner_id == user_id))
+    result = await db.execute(
+        select(Company).join(CompanyUser).where(CompanyUser.user_id == user_id)
+    )
     company = result.scalars().first()
     if not company:
         raise HTTPException(status_code=400, detail="You must register a company first")
