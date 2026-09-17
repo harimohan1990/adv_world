@@ -5,11 +5,10 @@ import { Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,12 +27,12 @@ export default function Auth() {
         });
         localStorage.setItem('token', response.data.access_token);
         // Basic check for admin routing
-        navigate(isAdmin ? '/admin' : '/dashboard');
+        navigate('/dashboard');
       } else {
         await api.post('/auth/register', {
           email,
           password,
-          role: isAdmin ? 'admin' : 'advertiser'
+          role: 'advertiser'
         });
         // Auto-login after registration
         const formData = new URLSearchParams();
@@ -43,7 +42,7 @@ export default function Auth() {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         localStorage.setItem('token', loginResponse.data.access_token);
-        navigate(isAdmin ? '/admin' : '/dashboard');
+        navigate('/dashboard');
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Authentication failed. Please try again.');
