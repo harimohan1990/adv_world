@@ -27,8 +27,12 @@ app.add_middleware(
 )
 
 from app.auth.router import router as auth_router
+from app.companies.router import router as companies_router
+from app.campaigns.router import router as campaigns_router
 
-app.include_router(auth_router)
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(companies_router, prefix="/api/v1/companies", tags=["Companies"])
+app.include_router(campaigns_router, prefix="/api/v1/campaigns", tags=["Campaigns"])
 
 @app.get("/")
 async def root():
