@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     # AI Provider
     AI_PROVIDER_API_KEY: Optional[str] = None
     
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
+    # Render default injected vars (optional)
+    PORT: Optional[str] = None
+    RENDER: Optional[str] = None
+    
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
 
 settings = Settings()
