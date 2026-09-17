@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     
     # Redis
-    REDIS_URL: str
+    REDIS_URL: Optional[str] = None
     
     # Security
     SECRET_KEY: str
