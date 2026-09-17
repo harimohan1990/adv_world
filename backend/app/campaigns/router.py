@@ -38,8 +38,11 @@ async def create_campaign(
     )
     db.add(campaign)
     await db.commit()
-    await db.refresh(campaign)
-    return campaign
+    
+    # Eagerly load the offers relationship to prevent MissingGreenlet errors during serialization
+    query = select(Campaign).options(selectinload(Campaign.offers)).where(Campaign.id == campaign.id)
+    result = await db.execute(query)
+    return result.scalars().first()
 
 @router.get("/", response_model=List[schemas.CampaignResponse])
 async def list_campaigns(
