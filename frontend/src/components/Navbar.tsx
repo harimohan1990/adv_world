@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Menu, X, User } from 'lucide-react';
+import { Sparkles, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Navbar() {

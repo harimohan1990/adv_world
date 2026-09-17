@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import Navbar from '../components/Navbar';
-import { Plus, Building, Megaphone, Loader2 } from 'lucide-react';
+import { Building, Megaphone, Loader2 } from 'lucide-react';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
