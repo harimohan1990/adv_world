@@ -9,19 +9,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Parse CORS origins manually to bypass Pydantic JSON strictness
-raw_origins = settings.BACKEND_CORS_ORIGINS
-if raw_origins.startswith("["):
-    import json
-    allowed_origins = json.loads(raw_origins)
-else:
-    allowed_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
-
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
