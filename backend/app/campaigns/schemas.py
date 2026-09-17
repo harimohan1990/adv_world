@@ -6,11 +6,11 @@ from pydantic import BaseModel
 # Offer Schemas
 class OfferBase(BaseModel):
     title: str
-    description: str
-    discount_value: float
-    discount_type: str # "percentage" or "fixed"
-    promo_code: Optional[str] = None
-    terms_conditions: Optional[str] = None
+    description: Optional[str] = None
+    offer_value: Optional[str] = None
+    coupon_code: Optional[str] = None
+    cta_text: Optional[str] = None
+    landing_page_url: Optional[str] = None
 
 class OfferCreate(OfferBase):
     pass
@@ -23,17 +23,17 @@ class OfferResponse(OfferBase):
 
 # Campaign Schemas
 class CampaignBase(BaseModel):
-    name: str
-    description: str
-    start_date: datetime
-    end_date: datetime
-    budget: float
+    title: str
+    description: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    budget: float = 0.0
 
 class CampaignCreate(CampaignBase):
     pass
 
 class CampaignUpdate(CampaignBase):
-    name: Optional[str] = None
+    title: Optional[str] = None
     status: Optional[str] = None
 
 class CampaignResponse(CampaignBase):

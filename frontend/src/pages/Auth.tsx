@@ -5,6 +5,7 @@ import { Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,19 +20,20 @@ export default function Auth() {
     try {
       if (isLogin) {
         const formData = new URLSearchParams();
-        formData.append('username', email); // OAuth2 expects 'username'
+        formData.append('username', email);
         formData.append('password', password);
         
         const response = await api.post('/auth/login', formData, {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         localStorage.setItem('token', response.data.access_token);
-        navigate('/dashboard');
+        // Basic check for admin routing
+        navigate(isAdmin ? '/admin' : '/dashboard');
       } else {
         await api.post('/auth/register', {
           email,
           password,
-          role: 'advertiser'
+          role: isAdmin ? 'admin' : 'advertiser'
         });
         // Auto-login after registration
         const formData = new URLSearchParams();
@@ -41,7 +43,7 @@ export default function Auth() {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         localStorage.setItem('token', loginResponse.data.access_token);
-        navigate('/dashboard');
+        navigate(isAdmin ? '/admin' : '/dashboard');
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Authentication failed. Please try again.');
@@ -112,6 +114,21 @@ export default function Auth() {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign in' : 'Create account')}
               </button>
             </div>
+            
+            {!isLogin && (
+              <div className="flex items-center">
+                <input
+                  id="is-admin"
+                  type="checkbox"
+                  checked={isAdmin}
+                  onChange={(e) => setIsAdmin(e.target.checked)}
+                  className="h-4 w-4 text-brand-purple focus:ring-brand-purple border-dark-border rounded bg-dark-base"
+                />
+                <label htmlFor="is-admin" className="ml-2 block text-sm text-gray-400">
+                  Register as Admin (For testing purposes)
+                </label>
+              </div>
+            )}
           </form>
 
           <div className="mt-6">

@@ -135,19 +135,60 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Megaphone className="text-brand-pink" />
-                  Active Campaigns
+                  Your Campaign Requests
                 </h3>
-                <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                  <Plus className="w-4 h-4" />
-                  New Campaign
-                </button>
               </div>
               
+              <div className="glass p-6 rounded-2xl border border-dark-border mb-8">
+                <h4 className="font-bold mb-4">Request New Campaign</h4>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Campaign Title"
+                    className="w-full px-4 py-2 bg-dark-base border border-dark-border rounded-lg"
+                    id="reqTitle"
+                  />
+                  <textarea
+                    placeholder="Describe your target audience and requirements"
+                    className="w-full px-4 py-2 bg-dark-base border border-dark-border rounded-lg h-24"
+                    id="reqDesc"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Budget ($)"
+                    className="w-full px-4 py-2 bg-dark-base border border-dark-border rounded-lg"
+                    id="reqBudget"
+                  />
+                  <button 
+                    onClick={async () => {
+                      try {
+                        await api.post('/campaigns/', {
+                          title: (document.getElementById('reqTitle') as HTMLInputElement).value,
+                          description: (document.getElementById('reqDesc') as HTMLInputElement).value,
+                          budget: parseFloat((document.getElementById('reqBudget') as HTMLInputElement).value) || 0,
+                          start_date: new Date().toISOString(),
+                          end_date: new Date(Date.now() + 30*24*60*60*1000).toISOString()
+                        });
+                        alert("Requirement submitted!");
+                        (document.getElementById('reqTitle') as HTMLInputElement).value = '';
+                        (document.getElementById('reqDesc') as HTMLInputElement).value = '';
+                        (document.getElementById('reqBudget') as HTMLInputElement).value = '';
+                      } catch (e) {
+                        alert("Error submitting requirement");
+                      }
+                    }}
+                    className="bg-brand-pink text-white px-4 py-2 rounded-lg"
+                  >
+                    Submit Requirement to Admin
+                  </button>
+                </div>
+              </div>
+
               <div className="glass p-12 rounded-2xl border border-dark-border text-center">
                 <Megaphone className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                <h4 className="text-lg font-medium text-gray-300 mb-2">No campaigns yet</h4>
+                <h4 className="text-lg font-medium text-gray-300 mb-2">Check back later</h4>
                 <p className="text-gray-500 max-w-sm mx-auto">
-                  Create your first advertising campaign to start reaching new customers with AI-targeted offers.
+                  Once the admin approves your requirement, your active campaigns and offers will appear here.
                 </p>
               </div>
             </div>

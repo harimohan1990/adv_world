@@ -5,9 +5,8 @@ interface OfferProps {
     id: string;
     title: string;
     description: string;
-    discount_value: number;
-    discount_type: string;
-    promo_code?: string;
+    offer_value: string;
+    coupon_code?: string;
   };
 }
 
@@ -30,14 +29,14 @@ export default function OfferCard({ offer }: OfferProps) {
         <div>
           <p className="text-xs text-gray-500 mb-1">Discount</p>
           <p className="text-2xl font-bold text-white">
-            {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `$${offer.discount_value}`}
+            {offer.offer_value}
           </p>
         </div>
-        {offer.promo_code && (
+        {offer.coupon_code && (
           <div className="text-right">
             <p className="text-xs text-gray-500 mb-1">Promo Code</p>
             <p className="font-mono text-brand-pink font-semibold bg-brand-pink/10 px-3 py-1 rounded-lg">
-              {offer.promo_code}
+              {offer.coupon_code}
             </p>
           </div>
         )}

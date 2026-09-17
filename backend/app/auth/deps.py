@@ -37,3 +37,8 @@ async def get_current_advertiser(current_user: Annotated[User, Depends(get_curre
     if current_user.role not in [UserRole.ADVERTISER, UserRole.ADMIN]:
         raise HTTPException(status_code=403, detail="The user doesn't have enough privileges")
     return current_user
+
+async def get_current_admin(current_user: Annotated[User, Depends(get_current_user)]) -> User:
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+    return current_user
