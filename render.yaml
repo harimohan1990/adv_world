@@ -15,7 +15,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: BACKEND_CORS_ORIGINS
-        value: "https://advantage-frontend.vercel.app" # Placeholder to be updated later
+        value: "https://advantage-frontend.vercel.app,https://adv-world-kohl.vercel.app"
 
 databases:
   - name: advantage-db
