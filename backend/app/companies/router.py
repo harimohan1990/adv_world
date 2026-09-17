@@ -7,7 +7,7 @@ from sqlalchemy import select
 from app.database.session import get_db
 from app.auth.deps import get_current_user, get_current_advertiser
 from app.users.models import User
-from app.companies.models import Company
+from app.companies.models import Company, CompanyUser
 from app.companies import schemas
 
 router = APIRouter()
@@ -19,17 +19,22 @@ async def create_company(
     current_user: User = Depends(get_current_advertiser)
 ):
     # Check if user already has a company
-    result = await db.execute(select(Company).where(Company.owner_id == current_user.id))
+    result = await db.execute(
+        select(Company).join(CompanyUser).where(CompanyUser.user_id == current_user.id)
+    )
     if result.scalars().first():
         raise HTTPException(status_code=400, detail="User already owns a company")
         
-    company = Company(
-        **company_in.model_dump(),
-        owner_id=current_user.id
-    )
+    company = Company(**company_in.model_dump())
     db.add(company)
     await db.commit()
     await db.refresh(company)
+    
+    # Link user to company
+    company_user = CompanyUser(company_id=company.id, user_id=current_user.id)
+    db.add(company_user)
+    await db.commit()
+    
     return company
 
 @router.get("/", response_model=List[schemas.CompanyResponse])
@@ -42,7 +47,9 @@ async def get_my_company(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_advertiser)
 ):
-    result = await db.execute(select(Company).where(Company.owner_id == current_user.id))
+    result = await db.execute(
+        select(Company).join(CompanyUser).where(CompanyUser.user_id == current_user.id)
+    )
     company = result.scalars().first()
     if not company:
         raise HTTPException(status_code=404, detail="Company not found")
