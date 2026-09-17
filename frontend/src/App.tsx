@@ -12,6 +12,23 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
+// Secure Admin Route wrapper
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('token');
+  if (!token) return <Navigate to="/login" />;
+  
+  try {
+    // Decode the payload of the JWT token
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.role !== 'admin') {
+      return <Navigate to="/dashboard" />;
+    }
+    return children;
+  } catch (e) {
+    return <Navigate to="/login" />;
+  }
+};
+
 export default function App() {
   return (
     <Router>
@@ -29,9 +46,9 @@ export default function App() {
         <Route 
           path="/admin" 
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <AdminDashboard />
-            </PrivateRoute>
+            </AdminRoute>
           } 
         />
       </Routes>

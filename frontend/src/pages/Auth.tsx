@@ -114,21 +114,6 @@ export default function Auth() {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign in' : 'Create account')}
               </button>
             </div>
-            
-            {!isLogin && (
-              <div className="flex items-center">
-                <input
-                  id="is-admin"
-                  type="checkbox"
-                  checked={isAdmin}
-                  onChange={(e) => setIsAdmin(e.target.checked)}
-                  className="h-4 w-4 text-brand-purple focus:ring-brand-purple border-dark-border rounded bg-dark-base"
-                />
-                <label htmlFor="is-admin" className="ml-2 block text-sm text-gray-400">
-                  Register as Admin (For testing purposes)
-                </label>
-              </div>
-            )}
           </form>
 
           <div className="mt-6">
